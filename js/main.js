@@ -119,7 +119,7 @@
       .autoRotateSpeed(0.5);
 
     // 初始视角对准浙江
-    globe.pointOfView({ lat: ZHEJIANG.lat, lng: ZHEJIANG.lng, altitude: 1.9 }, 0);
+    globe.pointOfView({ lat: ZHEJIANG.lat, lng: ZHEJIANG.lng, altitude: 2.4 }, 0);
 
     // 响应式尺寸
     function resize() {
