@@ -77,10 +77,11 @@
     // 浙江省（以省会杭州坐标代表，约 30.27°N, 120.16°E）
     const ZHEJIANG = { lat: 30.2741, lng: 120.1551 };
 
-    const globe = Globe()(container)
+    const globe = Globe({ rendererConfig: { antialias: true, alpha: true } })(container)
       .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-day.jpg")
       .bumpImageUrl("https://unpkg.com/three-globe/example/img/earth-topology.png")
       .backgroundColor("rgba(0,0,0,0)")
+      .globeResolution(128)
       .showAtmosphere(true)
       .atmosphereColor("#c7cbf3")
       .atmosphereAltitude(0.18)
@@ -120,6 +121,15 @@
 
     // 初始视角对准浙江
     globe.pointOfView({ lat: ZHEJIANG.lat, lng: ZHEJIANG.lng, altitude: 2.4 }, 0);
+
+    // 固定视角：禁用缩放/平移，仅保留拖拽旋转 + 自动旋转
+    const controls = globe.controls();
+    controls.enableZoom = false;
+    controls.enablePan = false;
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.5;
 
     // 响应式尺寸
     function resize() {
