@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI 产品经理的个人网站" />
+  <title>你的名字 · AI 产品经理</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- ========== 导航栏 ========== -->
+  <header class="nav" id="navbar">
+    <div class="container nav-inner">
+      <a href="#home" class="nav-logo">你的名字<span class="dot">.</span></a>
+      <nav class="nav-links" id="nav-links">
+        <a href="#about" class="nav-link">关于</a>
+        <a href="#work" class="nav-link">作品集</a>
+        <a href="#skills" class="nav-link">技能</a>
+        <a href="#contact" class="nav-link">联系</a>
+      </nav>
+      <button class="nav-toggle" id="nav-toggle" aria-label="打开菜单">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ========== Hero 首屏（含地球） ========== -->
+    <section class="hero" id="home">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="container hero-inner">
+        <div class="hero-content">
+          <p class="hero-eyebrow">你好，我是</p>
+          <h1 class="hero-title">你的名字</h1>
+          <p class="hero-subtitle">
+            AI 产品经理 · 用产品思维，把技术翻译成用户价值
+          </p>
+          <p class="hero-desc">
+            专注于 AI 产品的规划、设计与落地。相信好的产品，
+            是让复杂的技术以最简单的方式服务于人。
+          </p>
+          <div class="hero-actions">
+            <a href="#work" class="btn btn-primary">查看作品集</a>
+            <a href="#contact" class="btn btn-ghost">联系我</a>
+          </div>
+          <div class="hero-location">
+            <span class="loc-pin"></span>
+            <span>中国 · 浙江省</span>
+          </div>
+        </div>
+
+        <div class="hero-globe">
+          <div id="globe-viz"></div>
+        </div>
+      </div>
+      <a href="#about" class="hero-scroll" aria-label="向下滚动">
+        <span class="scroll-line"></span>
+      </a>
+    </section>
+
+    <!-- ========== 关于我 ========== -->
+    <section class="section" id="about">
+      <div class="container">
+        <h2 class="section-title">关于我</h2>
+        <div class="about-grid">
+          <div class="about-text">
+            <p>
+              我是一名 AI 产品经理，<strong>X 年</strong>专注于人工智能领域的产品工作。
+              从需求洞察到方案设计，从模型能力评估到产品落地，
+              我致力于让 AI 真正解决实际问题、创造价值。
+            </p>
+            <p>
+              我相信产品经理的核心能力，是在「技术可行性」与「用户需求」之间
+              找到最优解，并把复杂的事情讲清楚、做明白。
+            </p>
+            <p>
+              这里先写一段关于你自己的介绍，稍后可以随时替换。
+            </p>
+          </div>
+          <div class="about-meta">
+            <div class="meta-item">
+              <span class="meta-label">目前状态</span>
+              <span class="meta-value">开放新机会</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">所在地</span>
+              <span class="meta-value">中国 · 浙江省</span>
+            </div>
+            <div class="meta-item">
+              <span class="meta-label">邮箱</span>
+              <span class="meta-value">you@example.com</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 作品集 ========== -->
+    <section class="section section-alt" id="work">
+      <div class="container">
+        <h2 class="section-title">作品集</h2>
+        <p class="section-subtitle">
+          这里会展示你的 AI 产品项目。以下是占位卡片，后续替换为真实项目即可。
+        </p>
+
+        <div class="work-grid" id="work-grid">
+          <!-- 占位卡片：后续在这里补充项目 -->
+          <article class="work-card">
+            <div class="work-cover work-cover--placeholder">
+              <span>项目封面</span>
+            </div>
+            <div class="work-body">
+              <h3 class="work-title">项目名称</h3>
+              <p class="work-desc">
+                一句话描述这个项目：它解决了什么问题、你的角色是什么、带来了什么结果。
+              </p>
+              <ul class="work-tags">
+                <li class="tag">AI</li>
+                <li class="tag">产品设计</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="work-card">
+            <div class="work-cover work-cover--placeholder">
+              <span>项目封面</span>
+            </div>
+            <div class="work-body">
+              <h3 class="work-title">项目名称</h3>
+              <p class="work-desc">
+                一句话描述这个项目：它解决了什么问题、你的角色是什么、带来了什么结果。
+              </p>
+              <ul class="work-tags">
+                <li class="tag">大模型</li>
+                <li class="tag">0 → 1</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="work-card">
+            <div class="work-cover work-cover--placeholder">
+              <span>项目封面</span>
+            </div>
+            <div class="work-body">
+              <h3 class="work-title">项目名称</h3>
+              <p class="work-desc">
+                一句话描述这个项目：它解决了什么问题、你的角色是什么、带来了什么结果。
+              </p>
+              <ul class="work-tags">
+                <li class="tag">AI</li>
+                <li class="tag">增长</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 技能 ========== -->
+    <section class="section" id="skills">
+      <div class="container">
+        <h2 class="section-title">技能</h2>
+        <div class="skills-grid">
+          <div class="skill-card">
+            <h3 class="skill-name">产品规划</h3>
+            <p class="skill-desc">需求分析、市场调研、产品路线图、PRD 撰写</p>
+          </div>
+          <div class="skill-card">
+            <h3 class="skill-name">AI 能力</h3>
+            <p class="skill-desc">大模型应用、Prompt 设计、模型评估、RAG / Agent</p>
+          </div>
+          <div class="skill-card">
+            <h3 class="skill-name">数据分析</h3>
+            <p class="skill-desc">用户行为分析、指标体系建设、A/B 实验、SQL</p>
+          </div>
+          <div class="skill-card">
+            <h3 class="skill-name">工具协作</h3>
+            <p class="skill-desc">Figma、Axure、Jira、飞书、Notion</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 联系 ========== -->
+    <section class="section section-alt" id="contact">
+      <div class="container contact-inner">
+        <h2 class="section-title">联系我</h2>
+        <p class="section-subtitle">
+          无论是工作机会、项目合作，还是想聊聊 AI 产品，都欢迎联系。
+        </p>
+        <div class="contact-links">
+          <a class="btn btn-primary" href="mailto:you@example.com">发送邮件</a>
+          <a class="btn btn-ghost" href="#" target="_blank" rel="noopener">微信 / 简历</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== 页脚 ========== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>© <span id="year"></span> 你的名字 · 保留所有权利</span>
+      <span>简约 · 专注 · 创造价值</span>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/globe.gl"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
