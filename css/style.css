@@ -184,8 +184,10 @@ img {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 96px 24px 72px;
+  padding: 120px 24px;
+  min-height: calc(100vh - var(--nav-height));
 }
 
 .hero-content {
@@ -253,24 +255,6 @@ img {
   height: 8px;
   border-radius: 50%;
   background: var(--fuchsia);
-}
-
-/* 地球容器：像印刷专著里的行星，悬在标题下方 */
-.hero-globe {
-  width: 100%;
-  max-width: 440px;
-  height: 360px;
-  margin-top: 28px;
-}
-
-#globe-viz {
-  width: 100%;
-  height: 100%;
-  cursor: grab;
-}
-
-#globe-viz:active {
-  cursor: grabbing;
 }
 
 /* 向下滚动指示 */
@@ -609,11 +593,6 @@ img {
     padding: 72px 24px 64px;
   }
 
-  .hero-globe {
-    height: 320px;
-    max-width: 380px;
-  }
-
   .about-grid {
     grid-template-columns: 1fr;
   }
@@ -660,12 +639,6 @@ img {
 
   .hero-title {
     font-size: clamp(48px, 16vw, 72px);
-  }
-
-  .hero-globe {
-    height: 280px;
-    /* 移动端禁用拖拽，保证页面滚动流畅 */
-    pointer-events: none;
   }
 
   .work-grid {
