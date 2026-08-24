@@ -78,40 +78,40 @@
     const ZHEJIANG = { lat: 30.2741, lng: 120.1551 };
 
     const globe = Globe()(container)
-      .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg")
+      .globeImageUrl("https://unpkg.com/three-globe/example/img/earth-day.jpg")
       .bumpImageUrl("https://unpkg.com/three-globe/example/img/earth-topology.png")
       .backgroundColor("rgba(0,0,0,0)")
       .showAtmosphere(true)
-      .atmosphereColor("#818cf8")
-      .atmosphereAltitude(0.22)
+      .atmosphereColor("#c7cbf3")
+      .atmosphereAltitude(0.18)
 
-      // 发光标记点
+      // 发光标记点（杏桃色）
       .pointsData([ZHEJIANG])
       .pointLat("lat")
       .pointLng("lng")
-      .pointColor(function () { return "#a5b4fc"; })
+      .pointColor(function () { return "#f6cda4"; })
       .pointAltitude(0.02)
-      .pointRadius(0.42)
+      .pointRadius(0.4)
 
-      // 脉冲圆环
+      // 脉冲圆环（薰衣草）
       .ringsData([ZHEJIANG])
       .ringLat("lat")
       .ringLng("lng")
       .ringColor(function () {
-        return function (t) { return "rgba(139, 92, 246, " + (1 - t) + ")"; };
+        return function (t) { return "rgba(199, 203, 243, " + (1 - t) + ")"; };
       })
       .ringMaxRadius(6)
       .ringPropagationSpeed(3)
       .ringRepeatPeriod(900)
 
-      // 文字标签
+      // 文字标签（石墨墨）
       .labelsData([Object.assign({ text: "中国 · 浙江省" }, ZHEJIANG)])
       .labelLat("lat")
       .labelLng("lng")
       .labelText("text")
-      .labelSize(1.25)
-      .labelDotRadius(0.55)
-      .labelColor(function () { return "#e0e7ff"; })
+      .labelSize(1.2)
+      .labelDotRadius(0.5)
+      .labelColor(function () { return "#3a3a3e"; })
       .labelResolution(2)
 
       // 缓慢自转
