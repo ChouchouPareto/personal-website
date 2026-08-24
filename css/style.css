@@ -177,9 +177,19 @@ img {
     radial-gradient(520px circle at 8% 30%, rgba(228, 183, 238, 0.22), transparent 60%);
 }
 
-/* 垂直居中排版：超大标题在上，地球像行星一样悬在下方 */
+/* 光线背景（LightRays，WebGL） */
+.hero-rays {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* 垂直居中排版 */
 .hero-inner {
   position: relative;
+  z-index: 2;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -267,7 +277,7 @@ img {
   height: 34px;
   display: flex;
   justify-content: center;
-  z-index: 1;
+  z-index: 3;
 }
 
 .scroll-line {
