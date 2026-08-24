@@ -1,7 +1,8 @@
 // ============================================
 // 光线背景（LightRays）— 原生 WebGL 移植
 // 来源：React Bits（reactbits.dev）LightRays-JS-CSS
-// 不依赖 ogl / React，直接原生 WebGL + Shader 实现
+// 不依赖 ogl / React；带 IntersectionObserver：
+// 仅在元素进入视口时创建 WebGL 并渲染，离开时释放
 // ============================================
 (function () {
   "use strict";
@@ -133,7 +134,7 @@
   ].join("\n");
 
   function initLightRays(container, options) {
-    if (!container) return null;
+    if (!container || typeof IntersectionObserver === "undefined") return null;
     options = options || {};
 
     var raysOrigin = options.raysOrigin || "top-center";
@@ -149,17 +150,16 @@
     var noiseAmount = typeof options.noiseAmount === "number" ? options.noiseAmount : 0;
     var distortion = typeof options.distortion === "number" ? options.distortion : 0.35;
 
-    var canvas = document.createElement("canvas");
-    canvas.style.width = "100%";
-    canvas.style.height = "100%";
-    canvas.style.display = "block";
-    container.appendChild(canvas);
-
-    var gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: false });
-    if (!gl) {
-      if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
-      return null;
-    }
+    var canvas = null;
+    var gl = null;
+    var program = null;
+    var UL = null;
+    var rafId = null;
+    var started = false;
+    var failed = false;
+    var observer = null;
+    var mouse = { x: 0.5, y: 0.5 };
+    var smoothMouse = { x: 0.5, y: 0.5 };
 
     function compile(type, src) {
       var sh = gl.createShader(type);
@@ -171,56 +171,12 @@
       return sh;
     }
 
-    var program = gl.createProgram();
-    gl.attachShader(program, compile(gl.VERTEX_SHADER, VERT));
-    gl.attachShader(program, compile(gl.FRAGMENT_SHADER, FRAG));
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.warn("LightRays program link error:", gl.getProgramInfoLog(program));
-    }
-    gl.useProgram(program);
-
-    // 全屏三角形
-    var buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-
-    var posLoc = gl.getAttribLocation(program, "position");
-    gl.enableVertexAttribArray(posLoc);
-    gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-
-    // 混合（透明叠加）
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    gl.clearColor(0, 0, 0, 0);
-
-    var UL = {};
-    ["iTime", "iResolution", "rayPos", "rayDir", "raysColor", "raysSpeed",
-      "lightSpread", "rayLength", "pulsating", "fadeDistance", "saturation",
-      "mousePos", "mouseInfluence", "noiseAmount", "distortion"].forEach(function (name) {
-      UL[name] = gl.getUniformLocation(program, name);
-    });
-
     function setVec2(name, x, y) { if (UL[name] != null) gl.uniform2f(UL[name], x, y); }
     function setVec3(name, r, g, b) { if (UL[name] != null) gl.uniform3f(UL[name], r, g, b); }
     function setFloat(name, v) { if (UL[name] != null) gl.uniform1f(UL[name], v); }
 
-    var rgb = hexToRgb(raysColor);
-    setVec3("raysColor", rgb[0], rgb[1], rgb[2]);
-    setFloat("raysSpeed", raysSpeed);
-    setFloat("lightSpread", lightSpread);
-    setFloat("rayLength", rayLength);
-    setFloat("pulsating", pulsating ? 1.0 : 0.0);
-    setFloat("fadeDistance", fadeDistance);
-    setFloat("saturation", saturation);
-    setFloat("mouseInfluence", mouseInfluence);
-    setFloat("noiseAmount", noiseAmount);
-    setFloat("distortion", distortion);
-
-    var mouse = { x: 0.5, y: 0.5 };
-    var smoothMouse = { x: 0.5, y: 0.5 };
-
     function resize() {
+      if (!gl) return;
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
       var w = container.clientWidth;
       var h = container.clientHeight;
@@ -234,8 +190,8 @@
       setVec2("rayDir", p.dir[0], p.dir[1]);
     }
 
-    var rafId = null;
     function loop(t) {
+      if (!gl) return;
       setFloat("iTime", t * 0.001);
       if (followMouse && mouseInfluence > 0) {
         smoothMouse.x = smoothMouse.x * 0.92 + mouse.x * 0.08;
@@ -254,17 +210,100 @@
       mouse.y = (e.clientY - rect.top) / rect.height;
     }
 
-    if (followMouse) window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("resize", resize);
-    resize();
-    rafId = requestAnimationFrame(loop);
+    function setup() {
+      if (started || failed) return;
+
+      canvas = document.createElement("canvas");
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+      canvas.style.display = "block";
+      container.appendChild(canvas);
+
+      gl = canvas.getContext("webgl", { alpha: true, premultipliedAlpha: false });
+      if (!gl) {
+        if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+        canvas = null;
+        failed = true;
+        return;
+      }
+
+      program = gl.createProgram();
+      gl.attachShader(program, compile(gl.VERTEX_SHADER, VERT));
+      gl.attachShader(program, compile(gl.FRAGMENT_SHADER, FRAG));
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.warn("LightRays program link error:", gl.getProgramInfoLog(program));
+      }
+      gl.useProgram(program);
+
+      var buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+
+      var posLoc = gl.getAttribLocation(program, "position");
+      gl.enableVertexAttribArray(posLoc);
+      gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      gl.clearColor(0, 0, 0, 0);
+
+      UL = {};
+      ["iTime", "iResolution", "rayPos", "rayDir", "raysColor", "raysSpeed",
+        "lightSpread", "rayLength", "pulsating", "fadeDistance", "saturation",
+        "mousePos", "mouseInfluence", "noiseAmount", "distortion"].forEach(function (name) {
+        UL[name] = gl.getUniformLocation(program, name);
+      });
+
+      var rgb = hexToRgb(raysColor);
+      setVec3("raysColor", rgb[0], rgb[1], rgb[2]);
+      setFloat("raysSpeed", raysSpeed);
+      setFloat("lightSpread", lightSpread);
+      setFloat("rayLength", rayLength);
+      setFloat("pulsating", pulsating ? 1.0 : 0.0);
+      setFloat("fadeDistance", fadeDistance);
+      setFloat("saturation", saturation);
+      setFloat("mouseInfluence", mouseInfluence);
+      setFloat("noiseAmount", noiseAmount);
+      setFloat("distortion", distortion);
+
+      if (followMouse) window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("resize", resize);
+      resize();
+      rafId = requestAnimationFrame(loop);
+    }
+
+    function teardown() {
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+      window.removeEventListener("resize", resize);
+      if (followMouse) window.removeEventListener("mousemove", onMouseMove);
+      if (gl) {
+        var lose = gl.getExtension("WEBGL_lose_context");
+        if (lose) { try { lose.loseContext(); } catch (e) { /* ignore */ } }
+      }
+      if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
+      canvas = null;
+      gl = null;
+      program = null;
+      UL = null;
+    }
+
+    observer = new IntersectionObserver(function (entries) {
+      var visible = entries[0] && entries[0].isIntersecting;
+      if (visible && !started) {
+        started = true;
+        setup();
+      } else if (!visible && started) {
+        started = false;
+        teardown();
+      }
+    }, { threshold: 0.05, rootMargin: "120px" });
+    observer.observe(container);
 
     return {
       destroy: function () {
-        if (rafId) cancelAnimationFrame(rafId);
-        window.removeEventListener("resize", resize);
-        if (followMouse) window.removeEventListener("mousemove", onMouseMove);
-        if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+        if (observer) observer.disconnect();
+        if (started) { started = false; teardown(); }
       }
     };
   }

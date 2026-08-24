@@ -340,13 +340,34 @@ img {
 
 /* ---------- 通用 Section（发丝线分隔） ---------- */
 .section {
+  position: relative;
   padding: 100px 0;
   border-top: 1px solid var(--hairline);
+  background:
+    radial-gradient(640px circle at 50% -8%, rgba(246, 205, 164, 0.16), transparent 62%),
+    var(--bg);
 }
 
 .section-alt {
-  background: var(--bg-alt);
+  position: relative;
   border-top: 1px solid var(--hairline);
+  background:
+    radial-gradient(640px circle at 50% -8%, rgba(199, 203, 243, 0.18), transparent 62%),
+    var(--bg-alt);
+}
+
+/* 板块光线背景层（LightRays） */
+.section-rays {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.section .container {
+  position: relative;
+  z-index: 1;
 }
 
 .section-title {

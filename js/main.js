@@ -83,22 +83,25 @@
 
   highlightNav();
 
-  // ---------- 光线背景（LightRays） ----------
-  var raysEl = document.getElementById("hero-rays");
-  if (raysEl && typeof window.initLightRays === "function") {
-    window.initLightRays(raysEl, {
-      raysOrigin: "top-center",
-      raysColor: "#f0bd91",
-      raysSpeed: 0.6,
-      lightSpread: 1,
-      rayLength: 1.8,
-      pulsating: true,
-      fadeDistance: 1.0,
-      saturation: 0.55,
-      followMouse: true,
-      mouseInfluence: 0.08,
-      noiseAmount: 0,
-      distortion: 0.35
+  // ---------- 光线背景（LightRays，首页 + 各板块统一风格） ----------
+  var raysConfig = {
+    raysOrigin: "top-center",
+    raysColor: "#f0bd91",
+    raysSpeed: 0.6,
+    lightSpread: 1,
+    rayLength: 1.8,
+    pulsating: true,
+    fadeDistance: 1.0,
+    saturation: 0.55,
+    followMouse: true,
+    mouseInfluence: 0.08,
+    noiseAmount: 0,
+    distortion: 0.35
+  };
+  if (typeof window.initLightRays === "function") {
+    ["hero-rays", "rays-about", "rays-work", "rays-skills", "rays-contact"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) window.initLightRays(el, raysConfig);
     });
   }
 })();
